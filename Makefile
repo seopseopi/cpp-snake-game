@@ -1,6 +1,7 @@
-CC = g++
-CFLAGS = -Wall -g -Iinclude -std=c++17
-LIBS = -lncurses
+CXX ?= g++
+CPPFLAGS := -Iinclude $(CPPFLAGS)
+CXXFLAGS := -std=c++17 -Wall -Wextra -Wpedantic -g $(CXXFLAGS)
+LDLIBS := -lncurses $(LDLIBS)
 
 SRC_DIR = src
 INC_DIR = include
@@ -8,6 +9,7 @@ OBJ_DIR = obj
 
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+DEPS = $(OBJS:.o=.d)
 TARGET = snake
 
 all: $(OBJ_DIR) $(TARGET)
@@ -16,12 +18,22 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MMD -MP -c $< -o $@
+
+run: $(TARGET)
+	./$(TARGET)
+
+validate:
+	python3 scripts/validate_maps.py
+
+check: all validate
 
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
-.PHONY: all clean
+-include $(DEPS)
+
+.PHONY: all run validate check clean

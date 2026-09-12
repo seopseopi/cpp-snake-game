@@ -1,8 +1,8 @@
 // 파일로부터 맵을 읽어오고 ncurses를 이용해 화면에 그리는 Map 클래스 구현부
 #include "Map.hpp"
 #include "RedWallProjectile.hpp"
+#include <cctype>
 #include <fstream>
-#include <iostream>
 #include <algorithm>
 
 Map::Map(const std::string& filePath) : height(0), width(0) {
@@ -33,7 +33,7 @@ void Map::loadFromFile(const std::string& filePath) {
         std::vector<int> zoneRow;
         // 라인의 각 문자를 const 참조로 읽기만 한다 (변경 없음)
         for (const char c : line) {
-            if (isdigit(c)) {
+            if (std::isdigit(static_cast<unsigned char>(c))) {
                 row.push_back(c - '0');
                 zoneRow.push_back(ZONE_NONE);
             }

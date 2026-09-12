@@ -1,12 +1,11 @@
 // 아이템의 무작위 생성, 수명 체크 및 획득 처리를 담당하는 ItemManager 클래스 구현부
 #include "Item.hpp"
 #include <cstdlib>
-#include <ctime>
 
 ItemManager::ItemManager(Map& map) {
     // 초기 아이템들을 생성
     for (int i = 0; i < maxItems; ++i) {
-        spawnItem(map);
+        if (!spawnItem(map)) break;
     }
 }
 
@@ -15,6 +14,13 @@ bool ItemManager::update(Map& map) {
     
     // 수명이 다한 아이템을 확인
     for (auto it = items.begin(); it != items.end(); ) {
+        // 뱀이 먹어 해당 칸이 다른 값으로 바뀐 아이템은 즉시 목록에서 제거
+        if (map.getCell(it->y, it->x) != it->type) {
+            it = items.erase(it);
+            mapChanged = true;
+            continue;
+        }
+
         it->lifetimeTicks--;
         if (it->lifetimeTicks <= 0) {
             // 뱀이 아직 먹지 않아서 맵에 남아있는 경우 맵에서 제거(0으로 변경)
@@ -29,15 +35,14 @@ bool ItemManager::update(Map& map) {
     }
 
     // 최대 아이템 수를 유지하도록 새로운 아이템을 생성.
-    while ((int)items.size() < maxItems) {
-        spawnItem(map);
+    while ((int)items.size() < maxItems && spawnItem(map)) {
         mapChanged = true;
     }
 
     return mapChanged;
 }
 
-void ItemManager::spawnItem(Map& map) {
+bool ItemManager::spawnItem(Map& map) {
     int y, x;
     int attempts = 0;
     while (attempts < 100) {
@@ -59,25 +64,17 @@ void ItemManager::spawnItem(Map& map) {
             const Item item = {y, x, type, maxLifetime};
             items.push_back(item);
             map.setCell(y, x, type);
-            break;
+            return true;
         }
         attempts++;
     }
-}
-
-void ItemManager::consumeItem(Map& map, const int y, const int x) {
-    for (auto it = items.begin(); it != items.end(); ++it) {
-        if (it->y == y && it->x == x) {
-            items.erase(it);
-            break;
-        }
-    }
+    return false;
 }
 
 // 스테이지 전환 시 기존 아이템을 모두 제거하고 새 맵에 다시 생성
 void ItemManager::resetForNewMap(Map& map) {
     items.clear();
     for (int i = 0; i < maxItems; ++i) {
-        spawnItem(map);
+        if (!spawnItem(map)) break;
     }
 }

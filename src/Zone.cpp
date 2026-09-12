@@ -2,12 +2,11 @@
 #include "Zone.hpp"
 #include <algorithm>
 #include <cstdlib>
-#include <ctime>
 
 // 게임 시작·스테이지 전환 시 맵에 초기 존 배치
 ZoneManager::ZoneManager(Map& map) {
     for (int i = 0; i < maxZones; ++i) {
-        spawnZone(map);
+        if (!spawnZone(map)) break;
     }
 }
 
@@ -63,8 +62,7 @@ bool ZoneManager::update(Map& map) {
     }
 
     // 항상 maxZones개를 유지 (아이템 매니저와 같은 방식)
-    while (static_cast<int>(zones.size()) < maxZones) {
-        spawnZone(map);
+    while (static_cast<int>(zones.size()) < maxZones && spawnZone(map)) {
         changed = true;
     }
 
@@ -72,7 +70,7 @@ bool ZoneManager::update(Map& map) {
 }
 
 // 빈 칸에 2x2 패치를 랜덤 위치에 생성 (슬로우/패스트 50%)
-void ZoneManager::spawnZone(Map& map) {
+bool ZoneManager::spawnZone(Map& map) {
     const int h = map.getHeight();
     const int w = map.getWidth();
 
@@ -101,9 +99,10 @@ void ZoneManager::spawnZone(Map& map) {
 
         applyPatch(map, patch);
         zones.push_back(patch);
-        return;
+        return true;
     }
     // 120번 시도해도 자리를 못 찾으면 이번 프레임엔 그냥 패스
+    return false;
 }
 
 void ZoneManager::resetForNewMap(Map& map) {
@@ -112,6 +111,6 @@ void ZoneManager::resetForNewMap(Map& map) {
     }
     zones.clear();
     for (int i = 0; i < maxZones; ++i) {
-        spawnZone(map);
+        if (!spawnZone(map)) break;
     }
 }

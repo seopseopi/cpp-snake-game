@@ -1,1 +1,30 @@
+# Build outputs
+obj/
+build/
+cmake-build-*/
+snake
+snake.exe
+*.o
+*.obj
+*.d
+*.out
+*.exe
+
+# IDE and editor state
+.vs/
+.vscode/
+.idea/
+.cache/
 .clangd
+compile_commands.json
+__pycache__/
+*.py[cod]
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# OS metadata
+.DS_Store
+Thumbs.db
