@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/seopseopi/C-_2026_teamProject/actions/workflows/build.yml"><img src="https://github.com/seopseopi/C-_2026_teamProject/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
+  <a href="https://github.com/seopseopi/cpp-snake-game/actions/workflows/build.yml"><img src="https://github.com/seopseopi/cpp-snake-game/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
   <img src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=cplusplus&logoColor=white" alt="C++17">
   <img src="https://img.shields.io/badge/UI-ncurses-39d353" alt="ncurses">
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-8b949e" alt="Platforms">
@@ -44,8 +44,8 @@
 Command Line Tools가 없다면 먼저 `xcode-select --install`로 설치합니다.
 
 ```bash
-git clone https://github.com/seopseopi/C-_2026_teamProject.git
-cd C-_2026_teamProject
+git clone https://github.com/seopseopi/cpp-snake-game.git
+cd cpp-snake-game
 make
 ./snake
 ```
@@ -56,8 +56,8 @@ make
 sudo apt update
 sudo apt install -y build-essential libncurses-dev
 
-git clone https://github.com/seopseopi/C-_2026_teamProject.git
-cd C-_2026_teamProject
+git clone https://github.com/seopseopi/cpp-snake-game.git
+cd cpp-snake-game
 make
 ./snake
 ```
